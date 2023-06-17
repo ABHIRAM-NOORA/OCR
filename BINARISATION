@@ -1,15 +1,37 @@
 import cv2
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
-img = cv2.imread('venv/ocimg.png')
-img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-#print(pytesseract.image_to_string(img))
-hImg,wImg,_ = img.shape
-boxes=pytesseract.image_to_boxes(img)
-for b in boxes.splitlines():
-    b = b.split(' ')
-    print(b)
-    x,y,w,h = int(b[1]),int(b[2]),int (b[3]),int(b[4])
-    cv2.rectangle(img,(x,hImg-y),(w,hImg-h),(0,0,255),1)
-cv2.imshow('Result',img)
-cv2.waitKey(0)
+import cv2
+from matplotlib import pyplot as plt
+
+image_file = "venv/images.jpeg"
+img = cv2.imread(image_file)
+
+
+def display(im_path):
+    dpi = 80
+    im_data = plt.imread(im_path)
+
+    height, width = im_data.shape[:2]
+
+
+    figsize = width / float(dpi), height / float(dpi)
+
+
+    fig = plt.figure(figsize=figsize)
+    ax = fig.add_axes([0, 0, 1, 1])
+
+
+    ax.axis('off')
+    ax.imshow(im_data, cmap='gray')
+
+    plt.show()
+def grayscale(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+gray_image = grayscale(img)
+cv2.imwrite("venv/temp/gray.jpg", gray_image)
+def grayscale(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+thresh, im_bw = cv2.threshold(gray_image, 210, 230, cv2.THRESH_BINARY)
+cv2.imwrite("venv/temp/bw_image.jpg", im_bw)
+display("venv/temp/bw_image.jpg")
+
+
